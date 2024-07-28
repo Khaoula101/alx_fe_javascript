@@ -201,6 +201,24 @@ function handleServerQuotes(serverQuotes) {
   notifyUser("Quotes synced with server.");
 }
 
+// Function to sync quotes with the server
+async function syncQuotes() {
+  try {
+    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+    // Post all local quotes to the server
+    for (const quote of localQuotes) {
+      await postQuoteToServer(quote);
+    }
+
+    // Fetch the latest quotes from the server
+    await fetchQuotesFromServer();
+  } catch (error) {
+    console.error("Error syncing quotes:", error);
+    notifyUser("Error syncing quotes.");
+  }
+}
+
 // Function to notify the user
 function notifyUser(message) {
   const notification = document.getElementById("notification");
@@ -212,8 +230,8 @@ function notifyUser(message) {
 
 // Function to periodically sync with the server
 function startPeriodicSync() {
-  fetchQuotesFromServer();
-  setInterval(fetchQuotesFromServer, 300000); // Sync every 5 minutes
+  syncQuotes(); // Initial sync
+  setInterval(syncQuotes, 300000); // Sync every 5 minutes
 }
 
 // Event listener for the "Show New Quote" button
