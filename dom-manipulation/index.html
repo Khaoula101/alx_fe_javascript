@@ -1,3 +1,9 @@
+Let's enhance the "Dynamic Quote Generator" by implementing a dynamic content filtering system that allows users to
+filter quotes by categories stored in web storage.
+
+HTML:
+html
+Copier le code
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +15,11 @@
 
 <body>
     <h1>Dynamic Quote Generator</h1>
+    <div>
+        <select id="categoryFilter" onchange="filterQuotes()">
+            <option value="all">All Categories</option>
+        </select>
+    </div>
     <div id="quoteDisplay"></div>
     <button id="newQuote">Show New Quote</button>
     <div id="addQuoteFormContainer"></div>
