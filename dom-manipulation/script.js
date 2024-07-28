@@ -72,14 +72,38 @@ function addQuote() {
   const newQuoteCategory = document.getElementById("newQuoteCategory").value;
 
   if (newQuoteText && newQuoteCategory) {
-    quotes.push({ text: newQuoteText, category: newQuoteCategory });
+    const newQuote = { text: newQuoteText, category: newQuoteCategory };
+    quotes.push(newQuote);
     document.getElementById("newQuoteText").value = "";
     document.getElementById("newQuoteCategory").value = "";
     saveQuotes(); // Save quotes to local storage
     populateCategories(); // Update the category filter
     alert("New quote added!");
+    postQuoteToServer(newQuote); // Send the new quote to the server
   } else {
     alert("Please enter both quote text and category.");
+  }
+}
+
+// Function to post a new quote to the server
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(quote),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post quote to server");
+    }
+
+    notifyUser("Quote synced with server.");
+  } catch (error) {
+    console.error("Error posting quote to server:", error);
+    notifyUser("Error syncing quote with server.");
   }
 }
 
