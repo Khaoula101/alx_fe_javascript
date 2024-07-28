@@ -100,7 +100,7 @@ async function postQuoteToServer(quote) {
       throw new Error("Failed to post quote to server");
     }
 
-    notifyUser("Quote synced with server.");
+    notifyUser("Quote synced with server!");
   } catch (error) {
     console.error("Error posting quote to server:", error);
     notifyUser("Error syncing quote with server.");
@@ -181,6 +181,7 @@ async function fetchQuotesFromServer() {
     handleServerQuotes(serverQuotes);
   } catch (error) {
     console.error("Error fetching quotes from server:", error);
+    notifyUser("Error fetching quotes from server.");
   }
 }
 
@@ -198,16 +199,14 @@ function handleServerQuotes(serverQuotes) {
   quotes = mergedQuotes;
   saveQuotes();
   populateCategories();
-  notifyUser("Quotes synced with server.");
+  notifyUser("Quotes synced with server!");
 }
 
 // Function to sync quotes with the server
 async function syncQuotes() {
   try {
-    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-
     // Post all local quotes to the server
-    for (const quote of localQuotes) {
+    for (const quote of quotes) {
       await postQuoteToServer(quote);
     }
 
