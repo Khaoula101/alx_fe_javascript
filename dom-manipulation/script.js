@@ -22,6 +22,9 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   },
 ];
 
+// Mock API URL
+const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Replace with your mock API endpoint
+
 // Function to save quotes to local storage
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
@@ -146,6 +149,49 @@ function getFilteredQuotes() {
   }
 }
 
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(API_URL);
+    const serverQuotes = await response.json();
+    handleServerQuotes(serverQuotes);
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+  }
+}
+
+// Function to handle server quotes and resolve conflicts
+function handleServerQuotes(serverQuotes) {
+  let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  let mergedQuotes = [...serverQuotes, ...localQuotes];
+
+  // Remove duplicate quotes based on text
+  mergedQuotes = mergedQuotes.filter(
+    (quote, index, self) =>
+      index === self.findIndex((q) => q.text === quote.text)
+  );
+
+  quotes = mergedQuotes;
+  saveQuotes();
+  populateCategories();
+  notifyUser("Quotes synced with server.");
+}
+
+// Function to notify the user
+function notifyUser(message) {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  setTimeout(() => {
+    notification.textContent = "";
+  }, 3000);
+}
+
+// Function to periodically sync with the server
+function startPeriodicSync() {
+  fetchQuotesFromServer();
+  setInterval(fetchQuotesFromServer, 300000); // Sync every 5 minutes
+}
+
 // Event listener for the "Show New Quote" button
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 
@@ -169,3 +215,6 @@ if (lastViewedQuote) {
 } else {
   showRandomQuote();
 }
+
+// Start periodic syncing with the server
+startPeriodicSync();
