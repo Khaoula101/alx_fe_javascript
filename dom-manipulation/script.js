@@ -1,5 +1,3 @@
-// script.js
-
 // Array of quote objects
 const quotes = [
   {
@@ -32,6 +30,20 @@ function showRandomQuote() {
   quoteDisplay.innerHTML = `<p>${randomQuote.text}</p><p><em>${randomQuote.category}</em></p>`;
 }
 
+// Function to create and display the form for adding new quotes
+function createAddQuoteForm() {
+  const formContainer = document.getElementById("addQuoteFormContainer");
+  formContainer.innerHTML = `
+        <div>
+            <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+            <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+            <button id="addQuoteButton">Add Quote</button>
+        </div>
+    `;
+
+  document.getElementById("addQuoteButton").addEventListener("click", addQuote);
+}
+
 // Function to add a new quote
 function addQuote() {
   const newQuoteText = document.getElementById("newQuoteText").value;
@@ -49,6 +61,9 @@ function addQuote() {
 
 // Event listener for the "Show New Quote" button
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+
+// Create and display the add quote form when the page loads
+createAddQuoteForm();
 
 // Display the first quote when the page loads
 showRandomQuote();
